@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,7 +54,7 @@ class CalendarFragment : Fragment() {
         }
 
         binding.btnToday.setOnClickListener {
-            scrollToToday()
+            goToToday()
         }
 
         binding.noRecipesTextView.setOnClickListener {
@@ -98,6 +97,12 @@ class CalendarFragment : Fragment() {
             binding.tvDateMonth.text = sdf.format(cal.time) // Actualizar el mes mostrado
         }
         updateNoRecipesText()
+    }
+
+    private fun goToToday() {
+        cal.time = Calendar.getInstance(Locale.ENGLISH).time
+        setUpCalendar()
+        scrollToToday()
     }
 
     private fun updateNoRecipesText() {
