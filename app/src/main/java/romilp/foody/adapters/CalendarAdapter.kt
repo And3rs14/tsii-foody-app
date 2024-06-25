@@ -33,7 +33,7 @@ class CalendarAdapter(
 
             // Cambiar el color de fondo y texto si está seleccionado
             if (adapterPosition == selectedPosition) {
-                cardView.setCardBackgroundColor(Color.parseColor("#6200EA")) // Morado
+                cardView.setCardBackgroundColor(Color.parseColor("#800080")) // Morado
                 calendarDay.setTextColor(Color.WHITE)
                 calendarDate.setTextColor(Color.WHITE)
             } else {
@@ -74,6 +74,12 @@ class CalendarAdapter(
         selectedPosition = position
         if (previousPosition != -1) notifyItemChanged(previousPosition) // Actualiza la vista anterior
         notifyItemChanged(selectedPosition) // Actualiza la nueva vista seleccionada
+    }
+
+    fun clearSelection() {
+        val previousPosition = selectedPosition
+        selectedPosition = -1
+        if (previousPosition != -1) notifyItemChanged(previousPosition) // Actualiza la vista anterior
     }
 
     fun getSelectedPosition(): Int {

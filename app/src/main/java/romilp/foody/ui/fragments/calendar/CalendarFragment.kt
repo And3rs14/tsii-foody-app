@@ -45,11 +45,13 @@ class CalendarFragment : Fragment() {
 
         binding.ivCalendarNext.setOnClickListener {
             cal.add(Calendar.MONTH, 1)
+            adapter.clearSelection() // Limpia la selección al cambiar el mes
             setUpCalendar()
         }
 
         binding.ivCalendarPrevious.setOnClickListener {
             cal.add(Calendar.MONTH, -1)
+            adapter.clearSelection() // Limpia la selección al cambiar el mes
             setUpCalendar()
         }
 
@@ -101,6 +103,7 @@ class CalendarFragment : Fragment() {
 
     private fun goToToday() {
         cal.time = Calendar.getInstance(Locale.ENGLISH).time
+        adapter.clearSelection() // Limpia la selección al cambiar el mes
         setUpCalendar()
         scrollToToday()
     }
