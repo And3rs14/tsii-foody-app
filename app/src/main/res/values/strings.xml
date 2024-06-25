@@ -45,4 +45,7 @@
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
     <string name="share">Share</string>
     <string name="error">Error</string>
+
+    <string name="previous_month">Previous Month</string>
+    <string name="next_month">Next Month</string>
 </resources>

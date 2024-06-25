@@ -35,6 +35,15 @@
         android:name="romilp.foody.ui.fragments.foodJoke.FoodJokeFragment"
         android:label="Food Joke"
         tools:layout="@layout/fragment_food_joke" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="romilp.foody.ui.fragments.calendar.CalendarFragment"
+        android:label="Calendar"
+        tools:layout="@layout/fragment_calendar">
+        <action
+            android:id="@+id/action_calendarFragment_to_recipesFragment"
+            app:destination="@id/recipesFragment" />
+    </fragment>
     <dialog
         android:id="@+id/recipesBottomSheet"
         android:name="romilp.foody.ui.fragments.recipes.bottomSheet.RecipesBottomSheet"

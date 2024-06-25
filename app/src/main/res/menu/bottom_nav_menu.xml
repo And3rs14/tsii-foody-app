@@ -7,11 +7,17 @@
 
     <item
         android:id="@+id/favoriteRecipesFragment"
-        android:icon="@drawable/ic__star"
+        android:icon="@drawable/ic_star"
         android:title="@string/favorite_recipes_fragment" />
 
     <item
         android:id="@+id/foodJokeFragment"
         android:icon="@drawable/ic_food_joke"
         android:title="@string/food_joke" />
+
+    <!-- Nuevo ítem para el botón de Calendario -->
+    <item
+        android:id="@+id/calendarFragment"
+        android:icon="@drawable/ic_calendar"
+        android:title="Calendario" />
 </menu>

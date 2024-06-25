@@ -25,12 +25,13 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController // Asegúrate de que esto esté correcto
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.recipesFragment,
                 R.id.favoriteRecipesFragment,
-                R.id.foodJokeFragment
+                R.id.foodJokeFragment,
+                R.id.calendarFragment // Añadimos el nuevo fragmento de Calendario
             )
         )
 
