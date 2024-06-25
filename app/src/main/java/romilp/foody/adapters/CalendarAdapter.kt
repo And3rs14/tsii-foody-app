@@ -85,4 +85,8 @@ class CalendarAdapter(
     fun getSelectedPosition(): Int {
         return selectedPosition
     }
+
+    fun getSelectedDate(): Date? {
+        return if (selectedPosition != -1) list[selectedPosition].date else null
+    }
 }
