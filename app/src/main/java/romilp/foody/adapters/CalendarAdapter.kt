@@ -33,7 +33,7 @@ class CalendarAdapter(
 
             // Cambiar el color de fondo y texto si está seleccionado
             if (adapterPosition == selectedPosition) {
-                cardView.setCardBackgroundColor(Color.parseColor("#800080")) // Morado
+                cardView.setCardBackgroundColor(Color.parseColor("#6200EA")) // Morado
                 calendarDay.setTextColor(Color.WHITE)
                 calendarDate.setTextColor(Color.WHITE)
             } else {
