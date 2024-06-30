@@ -5,6 +5,7 @@ import romilp.foody.data.database.RecipesDAO
 import romilp.foody.data.database.entities.FavoritesEntity
 import romilp.foody.data.database.entities.FoodJokeEntity
 import romilp.foody.data.database.entities.RecipesEntity
+import romilp.foody.data.database.entities.ScheduledRecipeEntity
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
@@ -40,5 +41,20 @@ class LocalDataSource @Inject constructor(
 
     suspend fun deleteAllFavoriteRecipes() {
         recipesDAO.deleteAllFavoriteRecipes()
+    }
+
+    fun readScheduledRecipes(): Flow<List<ScheduledRecipeEntity>> {
+        return recipesDAO.readScheduledRecipes()
+    }
+    suspend fun insertScheduledRecipe(scheduledRecipeEntity: ScheduledRecipeEntity) {
+        recipesDAO.insertScheduledRecipe(scheduledRecipeEntity)
+    }
+
+    suspend fun deleteScheduledRecipe(scheduledRecipeEntity: ScheduledRecipeEntity) {
+        recipesDAO.deleteScheduledRecipe(scheduledRecipeEntity)
+    }
+
+    suspend fun deleteAllScheduledRecipes() {
+        recipesDAO.deleteAllScheduledRecipes()
     }
 }

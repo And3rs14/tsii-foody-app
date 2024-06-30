@@ -1,5 +1,6 @@
 package romilp.foody.ui
 
+import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,19 +17,23 @@ import dagger.hilt.android.AndroidEntryPoint
 import romilp.foody.R
 import romilp.foody.adapters.PagerAdapter
 import romilp.foody.data.database.entities.FavoritesEntity
+import romilp.foody.data.database.entities.ScheduledRecipeEntity
 import romilp.foody.databinding.ActivityDetailsBinding
 import romilp.foody.ui.fragments.ingredients.IngredientsFragment
 import romilp.foody.ui.fragments.instructions.InstructionsFragment
 import romilp.foody.ui.fragments.overview.OverviewFragment
 import romilp.foody.util.Constants.Companion.RECIPE_RESULT_KEY
 import romilp.foody.viewModels.MainViewModel
-import java.lang.Exception
+import romilp.foody.viewModels.ScheduledRecipeViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class DetailsActivity : AppCompatActivity() {
 
     private val args by navArgs<DetailsActivityArgs>()
     private val mainViewModel: MainViewModel by viewModels()
+    private val scheduledRecipeViewModel: ScheduledRecipeViewModel by viewModels()
     private lateinit var binding: ActivityDetailsBinding
 
     private var recipeSaved = false
@@ -57,7 +62,6 @@ class DetailsActivity : AppCompatActivity() {
         val resultBundle = Bundle()
         resultBundle.putParcelable(RECIPE_RESULT_KEY, args.result)
 
-
         val pagerAdapter = PagerAdapter(
             resultBundle,
             fragments,
@@ -65,9 +69,7 @@ class DetailsActivity : AppCompatActivity() {
         )
 
         binding.viewPager2.isUserInputEnabled = false
-        binding.viewPager2.apply {
-            adapter = pagerAdapter
-        }
+        binding.viewPager2.adapter = pagerAdapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
             tab.text = titles[position]
@@ -82,14 +84,25 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        } else if (item.itemId == R.id.save_to_favorites_menu && !recipeSaved) {
-            saveToFavorite(item)
-        } else if (item.itemId == R.id.save_to_favorites_menu && recipeSaved) {
-            removeFromFavorites(item)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            R.id.save_to_favorites_menu -> {
+                if (!recipeSaved) {
+                    saveToFavorite(item)
+                } else {
+                    removeFromFavorites(item)
+                }
+                true
+            }
+            R.id.calendar_menu -> {
+                showDatePickerDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun checkSavedRecipes(menuItem: MenuItem) {
@@ -105,7 +118,6 @@ class DetailsActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.d("DetailsActivity", e.message.toString())
             }
-
         }
     }
 
@@ -121,7 +133,7 @@ class DetailsActivity : AppCompatActivity() {
         val favoritesEntity = FavoritesEntity(savedRecipeId, args.result)
         mainViewModel.deleteFavoriteRecipe(favoritesEntity)
         changeMenuItemColor(item, R.color.white)
-        showSnackBar("Remove from Favorites")
+        showSnackBar("Removed from Favorites")
         recipeSaved = false
     }
 
@@ -137,5 +149,27 @@ class DetailsActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         changeMenuItemColor(menuItem, R.color.white)
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+            val selectedDate = Calendar.getInstance()
+            selectedDate.set(selectedYear, selectedMonth, selectedDay)
+            val scheduledRecipeEntity = ScheduledRecipeEntity(
+                date = selectedDate.time,
+                recipe = args.result
+            )
+            scheduledRecipeViewModel.insertScheduledRecipe(scheduledRecipeEntity)
+            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            println("DetailsActivity: Fecha seleccionada: ${dateFormat.format(selectedDate.time)}")
+            showSnackBar("Recipe scheduled for ${dateFormat.format(selectedDate.time)}")
+        }, year, month, day)
+
+        datePickerDialog.show()
     }
 }

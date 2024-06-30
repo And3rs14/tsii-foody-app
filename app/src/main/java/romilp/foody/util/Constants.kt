@@ -25,6 +25,10 @@ class Constants {
         const val DATABASE_NAME = "recipes_database"
         const val RECIPES_TABLE = "recipes_table"
         const val FAVORITE_RECIPES_TABLE = "favorite_recipes_table"
+        //const val SELECTED_DATES_TABLE = "selected_dates_table"
+        const val SCHEDULED_RECIPES_TABLE = "scheduled_recipes_table"
+        const val SELECTED_DATES_TABLE = "selected_dates_table"
+
         const val FOOD_JOKE_TABLE = "food_joke_table"
 
         // Bottom Sheet and Preferences

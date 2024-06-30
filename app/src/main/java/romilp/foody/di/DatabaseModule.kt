@@ -8,7 +8,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import romilp.foody.data.database.RecipesDatabase
-import romilp.foody.util.Constants.Companion.DATABASE_NAME
 import javax.inject.Singleton
 
 @Module
@@ -19,7 +18,12 @@ object DatabaseModule {
     @Provides
     fun provideDatabase(
         @ApplicationContext context: Context
-    ) = Room.databaseBuilder(context, RecipesDatabase::class.java, DATABASE_NAME).build()
+    ) = Room.databaseBuilder(
+        context,
+        RecipesDatabase::class.java,
+        "recipes_database"
+    ).addMigrations(RecipesDatabase.MIGRATION_1_2)
+        .build()
 
     @Singleton
     @Provides
