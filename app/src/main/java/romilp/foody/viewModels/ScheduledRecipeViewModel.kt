@@ -1,6 +1,7 @@
 package romilp.foody.viewModels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +15,7 @@ class ScheduledRecipeViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    val readScheduledRecipes = repository.local.readScheduledRecipes()
+    val readScheduledRecipes = repository.local.readScheduledRecipes().asLiveData()
 
     fun insertScheduledRecipe(scheduledRecipeEntity: ScheduledRecipeEntity) =
         viewModelScope.launch(Dispatchers.IO) {
