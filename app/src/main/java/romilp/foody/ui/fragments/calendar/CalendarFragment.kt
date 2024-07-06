@@ -19,7 +19,6 @@ import romilp.foody.viewModels.ScheduledRecipeViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class CalendarFragment : Fragment() {
 
     private var _binding: FragmentCalendarBinding? = null
@@ -50,7 +49,10 @@ class CalendarFragment : Fragment() {
             loadScheduledRecipes(calendarDateModel.date)
         }
 
-        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel)
+        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel) { scheduledRecipe ->
+            val action = CalendarFragmentDirections.actionCalendarFragmentToDetailsActivity(scheduledRecipe.recipe)
+            findNavController().navigate(action)
+        }
 
         binding.calendarRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.calendarRecyclerView.adapter = calendarAdapter
