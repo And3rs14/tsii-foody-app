@@ -6,6 +6,7 @@ import romilp.foody.data.database.entities.FavoritesEntity
 import romilp.foody.data.database.entities.FoodJokeEntity
 import romilp.foody.data.database.entities.RecipesEntity
 import romilp.foody.data.database.entities.ScheduledRecipeEntity
+import java.util.Date
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
@@ -57,4 +58,9 @@ class LocalDataSource @Inject constructor(
     suspend fun deleteAllScheduledRecipes() {
         recipesDAO.deleteAllScheduledRecipes()
     }
+    suspend fun getScheduledRecipesOnDate(date: Date): List<ScheduledRecipeEntity> {
+        return recipesDAO.getScheduledRecipesOnDate(date)
+    }
+
+
 }
