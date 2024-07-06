@@ -7,13 +7,17 @@
         <variable
             name="scheduledRecipe"
             type="romilp.foody.data.database.entities.ScheduledRecipeEntity" />
+        <variable
+            name="viewModel"
+            type="romilp.foody.viewModels.ScheduledRecipeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:padding="8dp"
-        android:background="?attr/selectableItemBackground">
+        android:background="@drawable/border_background">
 
         <ImageView
             android:id="@+id/recipeImageView"
@@ -42,5 +46,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Recipe Title" />
 
+        <ImageView
+            android:id="@+id/deleteRecipeImageView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/delete"
+            android:onClick="@{() -> viewModel.deleteScheduledRecipe(scheduledRecipe)}"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.105"
+            app:tint="@android:color/holo_red_dark" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

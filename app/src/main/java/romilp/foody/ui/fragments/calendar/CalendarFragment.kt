@@ -50,7 +50,7 @@ class CalendarFragment : Fragment() {
             loadScheduledRecipes(calendarDateModel.date)
         }
 
-        scheduledRecipeAdapter = ScheduledRecipeAdapter()
+        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel)
 
         binding.calendarRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.calendarRecyclerView.adapter = calendarAdapter

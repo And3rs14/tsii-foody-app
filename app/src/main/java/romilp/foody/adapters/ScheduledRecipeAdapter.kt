@@ -7,14 +7,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import romilp.foody.data.database.entities.ScheduledRecipeEntity
 import romilp.foody.databinding.ItemScheduledRecipeBinding
+import romilp.foody.viewModels.ScheduledRecipeViewModel
 
-class ScheduledRecipeAdapter :
-    ListAdapter<ScheduledRecipeEntity, ScheduledRecipeAdapter.ScheduledRecipeViewHolder>(DiffCallback()) {
+class ScheduledRecipeAdapter(
+    private val viewModel: ScheduledRecipeViewModel
+) : ListAdapter<ScheduledRecipeEntity, ScheduledRecipeAdapter.ScheduledRecipeViewHolder>(DiffCallback()) {
 
     class ScheduledRecipeViewHolder(private val binding: ItemScheduledRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(scheduledRecipe: ScheduledRecipeEntity) {
+        fun bind(scheduledRecipe: ScheduledRecipeEntity, viewModel: ScheduledRecipeViewModel) {
             binding.scheduledRecipe = scheduledRecipe
+            binding.viewModel = viewModel
             binding.executePendingBindings()
         }
     }
@@ -26,7 +29,7 @@ class ScheduledRecipeAdapter :
 
     override fun onBindViewHolder(holder: ScheduledRecipeViewHolder, position: Int) {
         val scheduledRecipe = getItem(position)
-        holder.bind(scheduledRecipe)
+        holder.bind(scheduledRecipe, viewModel)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<ScheduledRecipeEntity>() {
