@@ -49,11 +49,11 @@ class CalendarFragment : Fragment() {
             loadScheduledRecipes(calendarDateModel.date)
         }
 
-        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel) { scheduledRecipe ->
+        val currentDate = Calendar.getInstance().time
+        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel, currentDate){ scheduledRecipe ->
             val action = CalendarFragmentDirections.actionCalendarFragmentToDetailsActivity(scheduledRecipe.recipe)
             findNavController().navigate(action)
         }
-
         binding.calendarRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.calendarRecyclerView.adapter = calendarAdapter
 

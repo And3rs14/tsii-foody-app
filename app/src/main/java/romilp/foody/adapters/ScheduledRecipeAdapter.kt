@@ -8,17 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import romilp.foody.data.database.entities.ScheduledRecipeEntity
 import romilp.foody.databinding.ItemScheduledRecipeBinding
 import romilp.foody.viewModels.ScheduledRecipeViewModel
+import java.util.Date
 
 class ScheduledRecipeAdapter(
     private val viewModel: ScheduledRecipeViewModel,
-    private val clickListener: (ScheduledRecipeEntity) -> Unit
+    private val currentDate: Date, // Pasar la fecha actual al adaptador
+    private val clickListener: (ScheduledRecipeEntity) -> Unit,
 ) : ListAdapter<ScheduledRecipeEntity, ScheduledRecipeAdapter.ScheduledRecipeViewHolder>(DiffCallback()) {
 
     class ScheduledRecipeViewHolder(private val binding: ItemScheduledRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(scheduledRecipe: ScheduledRecipeEntity, viewModel: ScheduledRecipeViewModel, clickListener: (ScheduledRecipeEntity) -> Unit) {
+        fun bind(scheduledRecipe: ScheduledRecipeEntity, viewModel: ScheduledRecipeViewModel, isDeletable: Boolean, clickListener: (ScheduledRecipeEntity) -> Unit) {
             binding.scheduledRecipe = scheduledRecipe
             binding.viewModel = viewModel
+            binding.isDeletable = isDeletable
             binding.root.setOnClickListener {
                 clickListener(scheduledRecipe)
             }
@@ -33,7 +36,8 @@ class ScheduledRecipeAdapter(
 
     override fun onBindViewHolder(holder: ScheduledRecipeViewHolder, position: Int) {
         val scheduledRecipe = getItem(position)
-        holder.bind(scheduledRecipe, viewModel, clickListener)
+        val isDeletable = scheduledRecipe.date >= currentDate // Solo permitir eliminar si la fecha es igual o posterior a la actual
+        holder.bind(scheduledRecipe, viewModel, isDeletable, clickListener)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<ScheduledRecipeEntity>() {
