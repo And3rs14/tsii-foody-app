@@ -1,11 +1,14 @@
 package romilp.foody.ui
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.DatePicker
+import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -152,46 +155,56 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun showDatePickerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_schedule_recipe, null)
+        val mealTypeSpinner: Spinner = dialogView.findViewById(R.id.mealTypeSpinner)
+        val datePicker: DatePicker = dialogView.findViewById(R.id.datePicker)
+
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)) { _, year, month, dayOfMonth ->
+            calendar.set(year, month, dayOfMonth)
+        }
 
-        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDate = Calendar.getInstance()
-            selectedDate.set(selectedYear, selectedMonth, selectedDay)
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Agendar Receta")
+            .setView(dialogView)
+            .setPositiveButton("Aceptar") { _, _ ->
+                val selectedDate = calendar.time
+                val mealType = mealTypeSpinner.selectedItem.toString()
 
-            // Validar si la fecha seleccionada es antes del día presente
-            if (selectedDate.time.before(Calendar.getInstance().time) && !isSameDay(selectedDate.time, Calendar.getInstance().time)) {
-                showSnackBar("No puedes agendar una receta en una fecha pasada.")
-                return@DatePickerDialog
-            }
+                // Validar si la fecha seleccionada es antes del día presente
+                if (selectedDate.before(Calendar.getInstance().time) && !isSameDay(selectedDate, Calendar.getInstance().time)) {
+                    showSnackBar("No puedes agendar una receta en una fecha pasada.")
+                    return@setPositiveButton
+                }
 
-            // Validar si ya hay una receta programada en la misma fecha con el mismo ID
-            scheduledRecipeViewModel.isRecipeScheduledOnDate(args.result.recipeId, selectedDate.time) { isScheduled ->
-                runOnUiThread {
-                    if (isScheduled) {
-                        showSnackBar("Esta receta ya está agendada en la fecha seleccionada.")
-                    } else {
-                        val scheduledRecipeEntity = ScheduledRecipeEntity(
-                            date = selectedDate.time,
-                            recipe = args.result
-                        )
-                        scheduledRecipeViewModel.insertScheduledRecipe(scheduledRecipeEntity)
-                        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-                        showSnackBar("Receta agendada para el ${dateFormat.format(selectedDate.time)}")
+                // Validar si ya hay una receta programada en la misma fecha con el mismo ID y tipo de comida
+                scheduledRecipeViewModel.isRecipeScheduledOnDateAndType(args.result.recipeId, selectedDate, mealType) { isScheduled ->
+                    runOnUiThread {
+                        if (isScheduled) {
+                            showSnackBar("Esta receta ya está agendada para $mealType en la fecha seleccionada.")
+                        } else {
+                            val scheduledRecipeEntity = ScheduledRecipeEntity(
+                                date = selectedDate,
+                                recipe = args.result,
+                                mealType = mealType
+                            )
+                            scheduledRecipeViewModel.insertScheduledRecipe(scheduledRecipeEntity)
+                            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                            showSnackBar("Receta agendada para el ${dateFormat.format(selectedDate)} ($mealType)")
+                        }
                     }
                 }
             }
-        }, year, month, day)
+            .setNegativeButton("Cancelar", null)
+            .create()
 
-        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000 // Restringe fechas pasadas
-        datePickerDialog.show()
+        alertDialog.show()
     }
 
     private fun isSameDay(date1: Date, date2: Date): Boolean {
         val sdf = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         return sdf.format(date1) == sdf.format(date2)
     }
+
 
 }

@@ -62,5 +62,8 @@ class LocalDataSource @Inject constructor(
         return recipesDAO.getScheduledRecipesOnDate(date)
     }
 
+    suspend fun getScheduledRecipesOnDateAndType(date: Date, mealType: String): List<ScheduledRecipeEntity> {
+        return recipesDAO.getScheduledRecipesOnDateAndType(date, mealType)
+    }
 
 }

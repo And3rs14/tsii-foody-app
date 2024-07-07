@@ -22,7 +22,8 @@ object DatabaseModule {
         context,
         RecipesDatabase::class.java,
         "recipes_database"
-    ).addMigrations(RecipesDatabase.MIGRATION_1_2)
+    )
+        .addMigrations(RecipesDatabase.MIGRATION_1_2, RecipesDatabase.MIGRATION_2_3) // Agrega todas las migraciones
         .build()
 
     @Singleton

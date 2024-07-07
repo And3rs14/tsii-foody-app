@@ -50,4 +50,11 @@
     <string name="previous_month">Previous Month</string>
     <string name="next_month">Next Month</string>
     <string name="delete" />
+
+    <string-array name="meal_types">
+        <item>Desayuno</item>
+        <item>Almuerzo</item>
+        <item>Cena</item>
+    </string-array>
+
 </resources>

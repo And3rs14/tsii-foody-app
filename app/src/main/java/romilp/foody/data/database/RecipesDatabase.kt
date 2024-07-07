@@ -13,7 +13,7 @@ import romilp.foody.data.database.entities.ScheduledRecipeEntity
 
 @Database(
     entities = [RecipesEntity::class, FavoritesEntity::class, FoodJokeEntity::class, ScheduledRecipeEntity::class, SelectedDateEntity::class],
-    version = 2,  // Aumenta la versión de la base de datos
+    version = 3,  // Incrementa la versión de la base de datos
     exportSchema = false
 )
 @TypeConverters(RecipesTypeConverter::class, DateTypeConverter::class)
@@ -28,5 +28,12 @@ abstract class RecipesDatabase : RoomDatabase() {
                 database.execSQL("CREATE TABLE IF NOT EXISTS `selected_dates_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `selectedDate` INTEGER NOT NULL, `recipe` TEXT NOT NULL)")
             }
         }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE `scheduled_recipes_table` ADD COLUMN `mealType` TEXT NOT NULL DEFAULT 'Desayuno'")
+            }
+        }
     }
 }
+
