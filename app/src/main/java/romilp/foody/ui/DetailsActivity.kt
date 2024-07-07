@@ -160,16 +160,38 @@ class DetailsActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
             val selectedDate = Calendar.getInstance()
             selectedDate.set(selectedYear, selectedMonth, selectedDay)
-            val scheduledRecipeEntity = ScheduledRecipeEntity(
-                date = selectedDate.time,
-                recipe = args.result
-            )
-            scheduledRecipeViewModel.insertScheduledRecipe(scheduledRecipeEntity)
-            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            println("DetailsActivity: Fecha seleccionada: ${dateFormat.format(selectedDate.time)}")
-            showSnackBar("Recipe scheduled for ${dateFormat.format(selectedDate.time)}")
+
+            // Validar si la fecha seleccionada es antes del día presente
+            if (selectedDate.time.before(Calendar.getInstance().time) && !isSameDay(selectedDate.time, Calendar.getInstance().time)) {
+                showSnackBar("No puedes agendar una receta en una fecha pasada.")
+                return@DatePickerDialog
+            }
+
+            // Validar si ya hay una receta programada en la misma fecha con el mismo ID
+            scheduledRecipeViewModel.isRecipeScheduledOnDate(args.result.recipeId, selectedDate.time) { isScheduled ->
+                runOnUiThread {
+                    if (isScheduled) {
+                        showSnackBar("Esta receta ya está agendada en la fecha seleccionada.")
+                    } else {
+                        val scheduledRecipeEntity = ScheduledRecipeEntity(
+                            date = selectedDate.time,
+                            recipe = args.result
+                        )
+                        scheduledRecipeViewModel.insertScheduledRecipe(scheduledRecipeEntity)
+                        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                        showSnackBar("Receta agendada para el ${dateFormat.format(selectedDate.time)}")
+                    }
+                }
+            }
         }, year, month, day)
 
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000 // Restringe fechas pasadas
         datePickerDialog.show()
     }
+
+    private fun isSameDay(date1: Date, date2: Date): Boolean {
+        val sdf = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+        return sdf.format(date1) == sdf.format(date2)
+    }
+
 }

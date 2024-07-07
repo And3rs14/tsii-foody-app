@@ -8,6 +8,7 @@ import romilp.foody.data.database.entities.RecipesEntity
 import romilp.foody.data.database.entities.ScheduledRecipeEntity
 import romilp.foody.data.database.entities.SelectedDateEntity
 import romilp.foody.data.database.RecipesDatabase
+import java.util.Date
 
 @Dao
 interface RecipesDAO {
@@ -60,4 +61,6 @@ interface RecipesDAO {
     @Query("SELECT * FROM selected_dates_table ORDER BY id DESC LIMIT 1")
     suspend fun getLastSelectedDate(): SelectedDateEntity?
 
+    @Query("SELECT * FROM scheduled_recipes_table WHERE date(date / 1000, 'unixepoch') = date(:date / 1000, 'unixepoch')")
+    suspend fun getScheduledRecipesOnDate(date: Date): List<ScheduledRecipeEntity>
 }

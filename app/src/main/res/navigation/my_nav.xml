@@ -43,6 +43,13 @@
         <action
             android:id="@+id/action_calendarFragment_to_recipesFragment"
             app:destination="@id/recipesFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_detailsActivity"
+            app:destination="@id/details_Activity">
+            <argument
+                android:name="result"
+                app:argType="romilp.foody.model.Result" />
+        </action>
     </fragment>
     <dialog
         android:id="@+id/recipesBottomSheet"
