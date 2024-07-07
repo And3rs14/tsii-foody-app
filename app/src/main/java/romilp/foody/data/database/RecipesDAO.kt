@@ -63,4 +63,7 @@ interface RecipesDAO {
 
     @Query("SELECT * FROM scheduled_recipes_table WHERE date(date / 1000, 'unixepoch') = date(:date / 1000, 'unixepoch')")
     suspend fun getScheduledRecipesOnDate(date: Date): List<ScheduledRecipeEntity>
+
+    @Query("SELECT * FROM scheduled_recipes_table WHERE date = :date AND mealType = :mealType")
+    suspend fun getScheduledRecipesOnDateAndType(date: Date, mealType: String): List<ScheduledRecipeEntity>
 }

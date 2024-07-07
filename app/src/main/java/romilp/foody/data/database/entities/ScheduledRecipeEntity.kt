@@ -11,5 +11,6 @@ data class ScheduledRecipeEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var date: Date,
-    var recipe: Result
+    var recipe: Result,
+    var mealType: String
 )

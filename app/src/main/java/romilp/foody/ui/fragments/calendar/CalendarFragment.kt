@@ -49,11 +49,11 @@ class CalendarFragment : Fragment() {
             loadScheduledRecipes(calendarDateModel.date)
         }
 
-        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel) { scheduledRecipe ->
+        val currentDate = Calendar.getInstance().time
+        scheduledRecipeAdapter = ScheduledRecipeAdapter(scheduledRecipeViewModel, currentDate){ scheduledRecipe ->
             val action = CalendarFragmentDirections.actionCalendarFragmentToDetailsActivity(scheduledRecipe.recipe)
             findNavController().navigate(action)
         }
-
         binding.calendarRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.calendarRecyclerView.adapter = calendarAdapter
 
@@ -166,10 +166,28 @@ class CalendarFragment : Fragment() {
                 val sdf = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
                 sdf.format(scheduledRecipe.date) == sdf.format(date)
             }
-            scheduledRecipeAdapter.submitList(filteredRecipes)
+
+            val groupedRecipes = mutableListOf<ScheduledRecipeAdapter.Item>()
+            val groups = filteredRecipes.groupBy { it.mealType ?: "Sin Tipo" }
+
+            val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            val orderedGroups = when (currentHour) {
+                in 1..10 -> listOf("Desayuno", "Almuerzo", "Cena", "Sin Tipo")
+                in 11..16 -> listOf("Almuerzo", "Cena", "Desayuno", "Sin Tipo")
+                else -> listOf("Cena", "Desayuno", "Almuerzo", "Sin Tipo")
+            }.flatMap { group ->
+                groups[group]?.let { listOf(ScheduledRecipeAdapter.Item.Header(group)) + it.map { ScheduledRecipeAdapter.Item.RecipeItem(it) } } ?: emptyList()
+            }
+
+            groupedRecipes.addAll(orderedGroups)
+
+            scheduledRecipeAdapter.submitList(groupedRecipes)
             updateNoRecipesText(filteredRecipes)
         })
     }
+
+
+
 
     private fun updateNoRecipesText(filteredRecipes: List<ScheduledRecipeEntity>) {
         if (filteredRecipes.isEmpty()) {

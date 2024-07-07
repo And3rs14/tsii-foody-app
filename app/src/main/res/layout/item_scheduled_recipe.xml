@@ -10,6 +10,9 @@
         <variable
             name="viewModel"
             type="romilp.foody.viewModels.ScheduledRecipeViewModel" />
+        <variable
+            name="isDeletable"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,10 +53,11 @@
             android:id="@+id/deleteRecipeImageView"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="3dp"
             android:contentDescription="@string/delete"
             android:onClick="@{() -> viewModel.deleteScheduledRecipe(scheduledRecipe)}"
             android:src="@drawable/ic_delete"
+            android:visibility="@{isDeletable ? 0 : 8}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

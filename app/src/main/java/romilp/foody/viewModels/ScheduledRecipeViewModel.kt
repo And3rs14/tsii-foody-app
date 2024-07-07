@@ -36,21 +36,17 @@ class ScheduledRecipeViewModel @Inject constructor(
             repository.local.deleteAllScheduledRecipes()
         }
 
-    fun isRecipeScheduledOnDate(recipeId: Int, date: Date, callback: (Boolean) -> Unit) {
+    fun isRecipeScheduledOnDateAndType(recipeId: Int, date: Date, mealType: String, callback: (Boolean) -> Unit) {
         viewModelScope.launch {
             val isScheduled = withContext(Dispatchers.IO) {
                 val scheduledRecipes = repository.local.getScheduledRecipesOnDate(date)
-                // Imprimir todas las IDs de las recetas agendadas en el día especificado
-                val recipeIds = scheduledRecipes.map { it.recipe.recipeId }
-                println("Scheduled recipes on ${SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date)}: $recipeIds")
+                scheduledRecipes.any { it.recipe.recipeId == recipeId && it.mealType == mealType }
 
-                // Verificar si la receta con el ID dado ya está agendada en esa fecha
+                // Verificar si la receta con el ID dado ya está agendada en esa fecha con ese tipo de comida
                 scheduledRecipes.any { it.recipe.recipeId == recipeId }
             }
             callback(isScheduled)
         }
     }
-
-
 
 }
